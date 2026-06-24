@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+/* Base custom resets */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbars for a pristine UI experience */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #060913;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #17223b;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #00b4d8;
+}
+
+/* Glassmorphism Panel styles */
+.glass-panel {
+  background: rgba(18, 26, 46, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.glass-panel-heavy {
+  background: rgba(10, 15, 30, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card-hover {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card-hover:hover {
+  transform: translateY(-2px);
+  border-color: rgba(0, 212, 255, 0.25);
+  box-shadow: 0 10px 30px -10px rgba(0, 212, 255, 0.15);
+  background: rgba(18, 26, 46, 0.65);
+}
+
+/* Glowing element animations */
+.glow-primary {
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.15);
+}
+
+.glow-secondary {
+  box-shadow: 0 0 20px rgba(0, 255, 198, 0.15);
+}
+
+.glow-red {
+  box-shadow: 0 0 20px rgba(239, 68, 68, 0.15);
+}
+
+/* Accent texts */
+.text-gradient-cyan {
+  background: linear-gradient(135deg, #ffffff 30%, #00d4ff 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-green {
+  background: linear-gradient(135deg, #00d4ff 0%, #00ffc6 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* SVG Line & Wire animations */
+.conn-line-active {
+  stroke-dasharray: 8, 8;
+  animation: lineScan 30s linear infinite;
+}
+
+@keyframes lineScan {
+  from {
+    stroke-dashoffset: 500;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Live connection dotted guide */
+.wire-guide-pulse {
+  stroke-dasharray: 4, 4;
+  animation: guidePulse 1s linear infinite;
+}
+
+@keyframes guidePulse {
+  to {
+    stroke-dashoffset: -20;
+  }
+}

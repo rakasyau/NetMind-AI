@@ -1,0 +1,23 @@
+# Cloudflare Tunnel Configuration File
+# This file is used by the cloudflared daemon to route traffic.
+
+# The UUID of your tunnel. This is populated after running the 'cloudflared tunnel create' command.
+tunnel: ec8d2cf7-e318-499b-9492-fb50f93e41d5
+
+# Path to the credentials file generated during tunnel creation.
+# Inside WSL Ubuntu, this is typically stored in the user's home directory.
+credentials-file: /home/rakasyau/.cloudflared/YOUR_TUNNEL_UUID_HERE.json
+
+ingress:
+  # 1. Main Application Subdomain Ingress
+  # Routes external HTTPS requests targeting netmind-ai.rakasyau.my.id to the local container
+  - hostname: netmind-ai.rakasyau.my.id
+    service: http://localhost:3000
+    originRequest:
+      # Optional: set connect timeout and keep-alive parameters for stability
+      connectTimeout: 10s
+      noTLSVerify: true
+
+  # 2. Catch-all rule
+  # Standard Cloudflare ingress rule that responds with a 404 to any non-matching hostnames
+  - service: http_status:404

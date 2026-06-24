@@ -1,0 +1,6 @@
+{
+  "name": "NetMind AI",
+  "description": "AI-powered Network Simulator and Network Design Assistant",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

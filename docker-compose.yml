@@ -1,0 +1,28 @@
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: netmind-app
+    restart: unless-stopped
+    ports:
+      # Bind to localhost (127.0.0.1) only. This prevents external hosts on the network 
+      # from bypassing Cloudflare Tunnel and accessing the application directly.
+      - "127.0.0.1:3000:3000"
+    environment:
+      - PORT=3000
+      - NODE_ENV=production
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - MONGODB_URI=${MONGODB_URI}
+      - APP_URL=https://netmind-ai.rakasyau.my.id
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http = require('http'); const req = http.request({ host: 'localhost', port: 3000, path: '/api/health', method: 'GET', timeout: 2000 }, (res) => { process.exit(res.statusCode === 200 ? 0 : 1); }); req.on('error', () => process.exit(1)); req.end();"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    volumes:
+      # Mount projects.json directly to persist local fallback data if MongoDB Atlas is unavailable.
+      - ./projects.json:/app/projects.json
+
