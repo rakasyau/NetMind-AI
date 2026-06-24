@@ -38,8 +38,8 @@ NetMind AI is a premium, collaborative web workspace for network engineers, arch
 ### 1. Installation
 Clone the repository and install all dependencies:
 ```bash
-git clone <your-repo-url> netmind-ai
-cd netmind-ai
+git clone https://github.com/rakasyau/NetMind-AI.git
+cd NetMind-AI
 npm install
 ```
 
@@ -80,16 +80,17 @@ docker compose ps
 
 ---
 
+
 ## ☁️ Cloudflare Tunnel Exposure (WSL/Host)
 
-To expose your local environment securely under a custom domain (e.g., `netmind-ai.rakasyau.my.id`) without forwarding ports or exposing public IPs, a Cloudflare Tunnel configuration is included:
+To expose your local environment securely under a custom domain (e.g., `netmind-ai.yourdomain.com`) without forwarding ports or exposing public IPs, a Cloudflare Tunnel configuration is included:
 
 1.  Configure `cloudflare-tunnel-config.yml`:
     ```yaml
     tunnel: <YOUR_TUNNEL_UUID>
-    credentials-file: /home/rakasyau/.cloudflared/<YOUR_TUNNEL_UUID>.json
+    credentials-file: /home/<YOUR_WSL_USERNAME>/.cloudflared/<YOUR_TUNNEL_UUID>.json
     ingress:
-      - hostname: netmind-ai.rakasyau.my.id
+      - hostname: netmind-ai.yourdomain.com
         service: http://localhost:3000
       - service: http_status:404
     ```
