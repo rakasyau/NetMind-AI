@@ -133,23 +133,79 @@ http://localhost:3000
 ---
 
 
-## ☁️ Cloudflare Tunnel Exposure (WSL/Host)
+## ☁️ Cloudflare Tunnel Exposure
 
-To expose your local environment securely under a custom domain (e.g., `netmind-ai.yourdomain.com`) without forwarding ports or exposing public IPs, a Cloudflare Tunnel configuration is included:
+Untuk mengekspos environment lokal Anda secara aman ke domain kustom (misal: `netmind-ai.domainanda.com`) tanpa perlu melakukan port forwarding di router atau mengekspos IP publik Anda ke internet, Anda dapat menggunakan Cloudflare Tunnel. Konfigurasi `cloudflare-tunnel-config.yml` sudah disediakan.
 
-1.  Configure `cloudflare-tunnel-config.yml`:
-    ```yaml
-    tunnel: <YOUR_TUNNEL_UUID>
-    credentials-file: /home/<YOUR_WSL_USERNAME>/.cloudflared/<YOUR_TUNNEL_UUID>.json
-    ingress:
-      - hostname: netmind-ai.yourdomain.com
-        service: http://localhost:3000
-      - service: http_status:404
-    ```
-2.  Start the cloudflared daemon:
-    ```bash
-    cloudflared tunnel run <TUNNEL_NAME>
-    ```
+Berikut adalah langkah-langkah setup-nya:
+
+### 1. Instalasi Cloudflare Daemon (`cloudflared`)
+- **Windows (via Winget):**
+  ```powershell
+  winget install Cloudflare.cloudflared
+  ```
+- **macOS (via Homebrew):**
+  ```bash
+  brew install cloudflare/cloudflare/cloudflared
+  ```
+- **Linux / WSL (Ubuntu/Debian):**
+  ```bash
+  curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb && sudo dpkg -i cloudflared.deb
+  ```
+
+---
+
+### 2. Login dan Pembuatan Tunnel
+Jalankan perintah berikut di terminal/PowerShell Anda:
+1. Hubungkan `cloudflared` dengan akun Cloudflare Anda:
+   ```bash
+   cloudflared tunnel login
+   ```
+2. Buat tunnel baru (ganti `<TUNNEL_NAME>` dengan nama pilihan Anda, misalnya `netmind-tunnel`):
+   ```bash
+   cloudflared tunnel create <TUNNEL_NAME>
+   ```
+   Perintah ini akan menampilkan **Tunnel UUID** dan membuat file `.json` berisi kredensial di komputer Anda.
+
+---
+
+### 3. Konfigurasi `cloudflare-tunnel-config.yml`
+Sesuaikan file `cloudflare-tunnel-config.yml` di direktori proyek. Bagian yang perlu diubah adalah `tunnel` dan `credentials-file` berdasarkan sistem operasi yang digunakan:
+
+#### 💻 Opsi A: Jika Menggunakan Windows (Native)
+Arahkan `credentials-file` ke folder user profil Windows Anda:
+```yaml
+tunnel: <YOUR_TUNNEL_UUID>
+credentials-file: C:\Users\<YOUR_WINDOWS_USERNAME>\.cloudflared\<YOUR_TUNNEL_UUID>.json
+ingress:
+  - hostname: netmind-ai.domainanda.com
+    service: http://localhost:3000
+  - service: http_status:404
+```
+*(Ganti `<YOUR_WINDOWS_USERNAME>` dengan username Windows Anda dan `<YOUR_TUNNEL_UUID>` dengan UUID tunnel yang digenerate).*
+
+#### 🐧 Opsi B: Jika Menggunakan Linux / WSL
+Arahkan `credentials-file` ke home direktori Linux Anda:
+```yaml
+tunnel: <YOUR_TUNNEL_UUID>
+credentials-file: /home/<YOUR_WSL_USERNAME>/.cloudflared/<YOUR_TUNNEL_UUID>.json
+ingress:
+  - hostname: netmind-ai.domainanda.com
+    service: http://localhost:3000
+  - service: http_status:404
+```
+
+---
+
+### 4. Jalankan Tunnel
+Jalankan tunnel Anda agar trafik dari subdomain kustom diarahkan ke aplikasi lokal:
+```bash
+cloudflared tunnel run <TUNNEL_NAME>
+```
+Atau jika Anda ingin menjalankan dengan spesifik file konfigurasi:
+```bash
+cloudflared tunnel --config cloudflare-tunnel-config.yml run <TUNNEL_NAME>
+```
 
 ---
 
