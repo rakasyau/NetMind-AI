@@ -63,20 +63,72 @@ Open `http://localhost:3000` in your web browser.
 
 ## 🐳 Docker Deployment
 
-The project is fully containerized and production-ready.
+Project ini sudah ter-containerize sepenuhnya dan siap untuk production. Berikut adalah panduan deploy menggunakan **Docker Desktop** (baik via CLI maupun GUI):
 
-### 1. Build and Run Container
-```bash
-docker compose up -d --build
-```
-This launches:
-*   A secured web container running on `http://127.0.0.1:3000` (locked to local loopback interface for safety).
-*   A self-healing container with a healthcheck monitoring `/api/health`.
+### 📋 Prasyarat (Prerequisites)
+1. Pastikan **Docker Desktop** sudah terinstal dan berjalan di komputer Anda (Windows, macOS, atau Linux).
+2. Dapatkan **Gemini API Key** dari Google AI Studio.
 
-### 2. Check Health
-```bash
-docker compose ps
+---
+
+### 🚀 Cara Deploy Menggunakan Docker Desktop
+
+#### 1. Persiapan File Environment (`.env`) dan File Database Lokal
+Sebelum menjalankan container, buat file `.env` di direktori utama (root) proyek jika belum ada:
+```env
+PORT=3000
+GEMINI_API_KEY=YOUR_GEMINI_API_KEY_HERE
+MONGODB_URI=YOUR_MONGO_DB_CONNECTION_STRING_OPTIONAL
 ```
+> 💡 **Catatan Penting (Persistensi Data):**
+> Jika `MONGODB_URI` dikosongkan, data akan disimpan secara lokal di dalam container. Agar data lokal tersebut tersimpan secara persisten di host machine Anda, buat file kosong bernama `projects.json` di root direktori terlebih dahulu (terutama di Windows/macOS agar Docker tidak secara otomatis membuat folder dengan nama tersebut saat melakukan mounting volume).
+>
+> **Pada Linux/macOS:**
+> ```bash
+> touch projects.json
+> ```
+> **Pada Windows (PowerShell):**
+> ```powershell
+> New-Item projects.json -ItemType File
+> ```
+
+#### 2. Menjalankan Docker Compose
+Ada dua cara untuk menjalankan aplikasi menggunakan Docker Desktop:
+
+##### Opsi A: Menggunakan Command Line (CLI)
+1. Buka Terminal (macOS/Linux) atau Command Prompt/PowerShell (Windows) di direktori project.
+2. Jalankan perintah berikut untuk mem-build dan menjalankan container di background:
+   ```bash
+   docker compose up -d --build
+   ```
+3. Periksa status container yang sedang berjalan:
+   ```bash
+   docker compose ps
+   ```
+
+##### Opsi B: Menggunakan Docker Desktop GUI
+1. Buka aplikasi **Docker Desktop**.
+2. Jalankan perintah `docker compose up -d --build` sekali lewat terminal di direktori project untuk mendaftarkan project ke Docker Desktop.
+3. Setelah itu, project akan otomatis muncul di tab **Containers** di Docker Desktop dengan nama grup yang sesuai dengan nama folder project Anda (misalnya `netmind-ai`).
+4. Anda dapat mengontrol container secara visual melalui GUI Docker Desktop:
+   - **Start / Stop / Restart**: Klik tombol kontrol (Play, Stop, atau Restart) di sebelah container `netmind-app`.
+   - **Logs**: Klik pada nama container `netmind-app` untuk melihat log real-time aplikasi.
+   - **Terminal**: Buka tab *Terminal* di dalam detail container untuk menjalankan perintah langsung di dalam container.
+   - **Files**: Anda bisa menjelajahi struktur file container melalui tab *Files*.
+
+#### 3. Mengakses Aplikasi
+Buka browser Anda dan akses:
+```
+http://localhost:3000
+```
+> ⚠️ **Catatan Keamanan (Port Binding):**
+> Secara default di file `docker-compose.yml`, port di-bind ke `127.0.0.1:3000:3000`. Ini berarti aplikasi hanya dapat diakses dari komputer tempat Docker Desktop itu berjalan (localhost). 
+> 
+> Jika Anda ingin aplikasi dapat diakses dari perangkat lain dalam satu jaringan lokal (LAN), edit file `docker-compose.yml` pada bagian `ports` menjadi:
+> ```yaml
+> ports:
+>   - "3000:3000"
+> ```
 
 ---
 
